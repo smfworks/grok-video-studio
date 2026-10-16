@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Grok Bot Video Studio character pack",
+  "type": "object",
+  "required": ["schema_version", "name", "slug", "version", "type", "trust", "created_by", "created_at", "lock_text", "refs", "voice", "license", "provenance"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "name": {"type": "string", "minLength": 1, "maxLength": 80},
+    "slug": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,47}$"},
+    "version": {"type": "integer", "minimum": 1},
+    "type": {"enum": ["fictional", "owner"]},
+    "trust": {"enum": ["untrusted", "approved"]},
+    "created_by": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "format": "date-time"},
+    "lock_text": {"type": "string", "minLength": 20, "maxLength": 1200},
+    "wardrobe": {"type": "array", "items": {"type": "string"}},
+    "banned": {"type": "array", "items": {"type": "string"}},
+    "refs": {"type": "array", "minItems": 1, "maxItems": 14, "items": {"type": "object", "required": ["file", "view", "sha256"],
+      "properties": {"file": {"type": "string"}, "view": {"enum": ["front", "three-quarter", "profile", "full-body", "expressions", "other"]}, "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}}},
+    "voice": {"type": "object", "required": ["route"], "properties": {"route": {"enum": ["builtin", "xai-preset", "owner-recording"]}, "id": {"type": "string"}, "language": {"type": "string"}, "accent": {"type": "string"}}},
+    "license": {"type": "string", "minLength": 1},
+    "provenance": {"type": "object", "required": ["route"], "properties": {"route": {"enum": ["builtin", "xai", "owner-upload", "import"]}}},
+    "screening": {"type": "object", "required": ["by", "at", "real_person", "minor", "sexual"],
+      "properties": {"by": {"type": "string"}, "at": {"type": "string"}, "real_person": {"type": "boolean"}, "minor": {"type": "boolean"}, "sexual": {"type": "boolean"}}},
+    "consent_file": {"type": "string"}
+  }
+}

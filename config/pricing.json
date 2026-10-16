@@ -1,0 +1,97 @@
+{
+  "checked": "2026-10-16 (xAI per-resolution tiers re-checked on the video overview page)",
+  "currency": "USD",
+  "sources": {
+    "xai": "https://docs.x.ai/developers/pricing",
+    "xai_video_tiers": "https://docs.x.ai/developers/model-capabilities/video/overview"
+  },
+  "providers": {
+    "builtin": {
+      "label": "Grok Imagine (built-in tools)",
+      "billing": "generations",
+      "models": {
+        "generate-video": {
+          "kind": "video",
+          "per_generation": true
+        },
+        "generate-image": {
+          "kind": "image",
+          "per_generation": true
+        }
+      }
+    },
+    "xai": {
+      "label": "xAI Imagine API",
+      "billing": "usd",
+      "secret": "XAI_API_KEY",
+      "models": {
+        "grok-imagine-video-1.5": {
+          "kind": "video",
+          "per_second": {
+            "480p": 0.08,
+            "720p": 0.14,
+            "1080p": 0.25
+          },
+          "image_input": 0.01,
+          "max_seconds": 15
+        },
+        "grok-imagine-video-1.5-lite": {
+          "kind": "video",
+          "per_second": {
+            "480p": 0.02,
+            "720p": 0.03,
+            "1080p": 0.14
+          },
+          "image_input": 0.01,
+          "max_seconds": 15
+        },
+        "grok-imagine-video": {
+          "kind": "video",
+          "per_second": {
+            "480p": 0.05,
+            "720p": 0.07
+          },
+          "image_input": 0.002,
+          "max_seconds": 15
+        },
+        "grok-imagine-image": {
+          "kind": "image",
+          "per_image": 0.02,
+          "image_input": 0.002
+        },
+        "grok-imagine-image-2.0": {
+          "kind": "image",
+          "per_image": 0.04,
+          "image_input": 0.01
+        },
+        "tts": {
+          "kind": "tts",
+          "per_million_chars": 15.0
+        }
+      }
+    },
+    "browser": {
+      "label": "grok.com/imagine in the bot's browser (backup, off by default)",
+      "billing": "generations",
+      "models": {
+        "imagine-web-video": {
+          "kind": "video",
+          "per_generation": true
+        },
+        "imagine-web-image": {
+          "kind": "image",
+          "per_generation": true
+        }
+      }
+    }
+  },
+  "limits": {
+    "regens_per_shot": 2,
+    "render_retries": 1,
+    "api_retries": 2,
+    "demo": {
+      "videos": 1,
+      "images": 2
+    }
+  }
+}

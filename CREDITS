@@ -1,0 +1,10 @@
+Grok Video Studio: credits
+
+- Pipeline design draws on Grok Studio (https://github.com/smfworks/grok-studio, MIT License, Copyright (c) 2026 SMF Works):
+  the plan-then-approve flow, the cited-explainer QA approach and the loudness targets. The scripts here are new code.
+- Piper TTS (https://github.com/rhasspy/piper), release 2023.11.14-2, MIT License, Copyright (c) 2022 Michael Hansen.
+  Downloaded by install.sh at a pinned URL and sha256; not redistributed in this repo.
+- Piper voice en_US-ljspeech-high (https://huggingface.co/rhasspy/piper-voices, tag v1.0.0; repository license MIT).
+  Trained on the LJ Speech Dataset (https://keithito.com/LJ-Speech-Dataset/, public domain). Downloaded by install.sh; not redistributed.
+- ffmpeg (https://ffmpeg.org), faster-whisper (MIT), librosa (ISC) and numpy (BSD) are used as installed tools/libraries; not redistributed.
+- Generation runs on Grok Imagine (built-in Grok Bot tools) and, opt-in, the xAI API (https://docs.x.ai) with the owner's own key.
