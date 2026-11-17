@@ -6,5 +6,9 @@ Grok Video Studio: credits
   Downloaded by install.sh at a pinned URL and sha256; not redistributed in this repo.
 - Piper voice en_US-ljspeech-high (https://huggingface.co/rhasspy/piper-voices, tag v1.0.0; repository license MIT).
   Trained on the LJ Speech Dataset (https://keithito.com/LJ-Speech-Dataset/, public domain). Downloaded by install.sh; not redistributed.
-- ffmpeg (https://ffmpeg.org), faster-whisper (MIT), librosa (ISC) and numpy (BSD) are used as installed tools/libraries; not redistributed.
+- Kit fonts, SIL Open Font License 1.1, from google/fonts (https://github.com/google/fonts, commit 7af0d90b4d532ffa4b041937b560c6df4e7b1e95):
+  Caveat Brush (Copyright 2015 Google Inc.), Kalam (Copyright (c) 2014, Indian Type Foundry) and Inter (Copyright 2020 The Inter Project Authors).
+  Downloaded by install.sh at pinned URLs and sha256; not redistributed in this repo.
+- The kits' music, SFX, chalk mascot and diagrams are original code-synthesized/code-drawn; no samples or third-party artwork.
+- ffmpeg (https://ffmpeg.org), faster-whisper (MIT), librosa (ISC), numpy (BSD), Pillow (MIT-CMU), openpyxl (MIT) and requests (Apache-2.0) are used as installed tools/libraries; not redistributed.
 - Generation runs on Grok Imagine (built-in Grok Bot tools) and, opt-in, the xAI API (https://docs.x.ai) with the owner's own key.
