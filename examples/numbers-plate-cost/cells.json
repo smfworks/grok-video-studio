@@ -1,0 +1,174 @@
+{
+ "A1": {
+  "v": "EXAMPLE FIGURES - made-up costing sheet",
+  "conf": "high"
+ },
+ "A2": {
+  "v": "Grilled Salmon Plate",
+  "conf": "high"
+ },
+ "A3": {
+  "v": "Ingredient",
+  "conf": "high"
+ },
+ "B3": {
+  "v": "Qty",
+  "conf": "high"
+ },
+ "C3": {
+  "v": "Unit",
+  "conf": "high"
+ },
+ "D3": {
+  "v": "Unit cost",
+  "conf": "high"
+ },
+ "E3": {
+  "v": "Line cost",
+  "conf": "high"
+ },
+ "A4": {
+  "v": "Salmon fillet (6 oz)",
+  "conf": "high"
+ },
+ "B4": {
+  "v": 0.375,
+  "conf": "high"
+ },
+ "C4": {
+  "v": "lb",
+  "conf": "high"
+ },
+ "D4": {
+  "v": 14.4,
+  "conf": "high"
+ },
+ "E4": {
+  "v": 5.4,
+  "conf": "high"
+ },
+ "A5": {
+  "v": "Jasmine rice (6 oz)",
+  "conf": "high"
+ },
+ "B5": {
+  "v": 0.375,
+  "conf": "high"
+ },
+ "C5": {
+  "v": "lb",
+  "conf": "high"
+ },
+ "D5": {
+  "v": 1.6,
+  "conf": "high"
+ },
+ "E5": {
+  "v": 0.6,
+  "conf": "high"
+ },
+ "A6": {
+  "v": "Asparagus (4 oz)",
+  "conf": "high"
+ },
+ "B6": {
+  "v": 0.25,
+  "conf": "high"
+ },
+ "C6": {
+  "v": "lb",
+  "conf": "high"
+ },
+ "D6": {
+  "v": 4.8,
+  "conf": "high"
+ },
+ "E6": {
+  "v": 1.2,
+  "conf": "high"
+ },
+ "A7": {
+  "v": "Lemon butter sauce (2 oz)",
+  "conf": "high"
+ },
+ "B7": {
+  "v": 2.0,
+  "conf": "high"
+ },
+ "C7": {
+  "v": "oz",
+  "conf": "high"
+ },
+ "D7": {
+  "v": 0.35,
+  "conf": "high"
+ },
+ "E7": {
+  "v": 0.7,
+  "conf": "high"
+ },
+ "A8": {
+  "v": "Lemon and herb garnish",
+  "conf": "high"
+ },
+ "B8": {
+  "v": 1.0,
+  "conf": "high"
+ },
+ "C8": {
+  "v": "each",
+  "conf": "high"
+ },
+ "D8": {
+  "v": 0.25,
+  "conf": "high"
+ },
+ "E8": {
+  "v": 0.25,
+  "conf": "high"
+ },
+ "A9": {
+  "v": "Bread and butter",
+  "conf": "high"
+ },
+ "B9": {
+  "v": 1.0,
+  "conf": "high"
+ },
+ "C9": {
+  "v": "each",
+  "conf": "high"
+ },
+ "D9": {
+  "v": 0.45,
+  "conf": "high"
+ },
+ "E9": {
+  "v": 0.45,
+  "conf": "high"
+ },
+ "A10": {
+  "v": "Total plate cost",
+  "conf": "high"
+ },
+ "E10": {
+  "v": 8.6,
+  "conf": "high"
+ },
+ "A12": {
+  "v": "Menu price",
+  "conf": "high"
+ },
+ "E12": {
+  "v": 28.0,
+  "conf": "high"
+ },
+ "A13": {
+  "v": "Plates sold per week",
+  "conf": "high"
+ },
+ "E13": {
+  "v": 120.0,
+  "conf": "high"
+ }
+}
