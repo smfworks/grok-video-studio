@@ -1,0 +1,500 @@
+{
+ "title": "The rail won't clear on Friday night",
+ "project": "v10-sample-fix-it-case-study",
+ "example": true,
+ "client_name": null,
+ "client_permission": null,
+ "owner_result_source": null,
+ "example_figures_label": true,
+ "duration": 39.0,
+ "voice_route": "xai",
+ "voice_id": "eve",
+ "bpm": 124,
+ "drop": 18.9,
+ "outro": 34.0,
+ "phases": [
+  {
+   "name": "PROBLEM",
+   "label": "THE PROBLEM",
+   "head": "THE RAIL WON'T CLEAR",
+   "start": 0,
+   "end": 6.3
+  },
+  {
+   "name": "CAUSE",
+   "label": "THE CAUSE",
+   "head": "IT'S NOT THE COOKS",
+   "start": 6.3,
+   "end": 12.0
+  },
+  {
+   "name": "FIX",
+   "label": "THE FIX",
+   "head": "THREE SIMPLE MOVES",
+   "start": 12.0,
+   "end": 18.9,
+   "checks": [
+    {
+     "t": 2.5,
+     "text": "PREP TO PAR BY 5"
+    },
+    {
+     "t": 4.0,
+     "text": "ONE EXPO CALLS IT"
+    },
+    {
+     "t": 5.4,
+     "text": "FIRE IN WAVES"
+    }
+   ]
+  },
+  {
+   "name": "RESULT",
+   "label": "THE RESULT",
+   "head": "NEXT FRIDAY...",
+   "start": 18.9,
+   "end": 26.4
+  },
+  {
+   "name": "TRY",
+   "label": "TRY IT",
+   "head": "SAME CREW. BETTER FLOW.",
+   "start": 26.4,
+   "end": 33.4
+  },
+  {
+   "name": "END",
+   "label": "",
+   "head": "",
+   "start": 33.4,
+   "end": 39.0
+  }
+ ],
+ "results": [
+  {
+   "t": 20.0,
+   "label": "AVG TICKET TIME",
+   "before": 22,
+   "after": 12,
+   "unit": "MIN"
+  },
+  {
+   "t": 23.15,
+   "label": "COVERS PER HOUR",
+   "before": 48,
+   "after": 64,
+   "unit": ""
+  }
+ ],
+ "cta": {
+  "headline": "WANT THIS ON YOUR LINE?",
+  "action": "BOOK A CONSULT",
+  "contact": "yoursite.com/book"
+ },
+ "ai_label_lines": [
+  "AI-generated with",
+  "Grok Bot Video Studio"
+ ],
+ "cues": [
+  {
+   "at": 0.15,
+   "speed": 1.12,
+   "caption": "Friday, 7:42 PM. The rail is *full.*",
+   "say": "Friday, seven forty-two P M. The rail is <emphasis>full</emphasis>."
+  },
+  {
+   "at": 3.6,
+   "speed": 1.05,
+   "caption": "Tickets at *22 minutes*... and climbing.",
+   "say": "Tickets at twenty-two minutes... and climbing."
+  },
+  {
+   "at": 6.45,
+   "speed": 1.0,
+   "caption": "Here's the thing: the cooks aren't slow.",
+   "say": "Here's the thing: the cooks <emphasis>aren't</emphasis> slow."
+  },
+  {
+   "at": 9.4,
+   "speed": 1.12,
+   "caption": "Prep ran out mid-rush, and *nobody* owned the handoff.",
+   "say": "Prep ran out mid-rush, and nobody owned the handoff."
+  },
+  {
+   "at": 12.15,
+   "speed": 0.98,
+   "caption": "So: three simple moves.",
+   "say": "So: three simple moves."
+  },
+  {
+   "at": 14.35,
+   "speed": 1.1,
+   "caption": "*Prep to par* by five. *One expo* calls the window. *Fire in waves.*",
+   "say": "Prep to par by five. One expo calls the window. Fire in waves."
+  },
+  {
+   "at": 19.05,
+   "speed": 1.08,
+   "caption": "In this example, ticket times went from 22 minutes down to *12!*",
+   "say": "In this example, ticket times went from twenty-two minutes, down to <emphasis>twelve</emphasis>!"
+  },
+  {
+   "at": 23.15,
+   "speed": 1.12,
+   "caption": "Covers per hour? *48 to 64.*",
+   "say": "Covers per hour? Forty-eight to sixty-four."
+  },
+  {
+   "at": 26.55,
+   "speed": 1.05,
+   "caption": "Same crew. Same kitchen. *Way better flow.*",
+   "say": "Same crew. Same kitchen. Way better flow."
+  },
+  {
+   "at": 30.0,
+   "speed": 1.1,
+   "caption": "Grab the *free* checklist and par sheet, and try it this Friday.",
+   "say": "Grab the free checklist and par sheet, and try it this Friday."
+  },
+  {
+   "at": 33.55,
+   "speed": 1.0,
+   "caption": "Want this on your line? *Let's talk.*",
+   "say": "Want this on your line? Let's talk."
+  }
+ ],
+ "acting": [
+  {
+   "t": 0.0,
+   "pose": "point",
+   "mood": "o"
+  },
+  {
+   "t": 1.3,
+   "pose": "facepalm",
+   "mood": "frown"
+  },
+  {
+   "t": 6.4,
+   "pose": "idea",
+   "mood": "o"
+  },
+  {
+   "t": 8.7,
+   "pose": "point",
+   "mood": "smirk"
+  },
+  {
+   "t": 12.1,
+   "pose": "shrug",
+   "mood": "smile"
+  },
+  {
+   "t": 14.2,
+   "pose": "work",
+   "mood": "smirk"
+  },
+  {
+   "t": 19.0,
+   "pose": "celebrate",
+   "mood": "grin",
+   "hop": true
+  },
+  {
+   "t": 21.0,
+   "pose": "point",
+   "mood": "o"
+  },
+  {
+   "t": 22.1,
+   "pose": "thumbs",
+   "mood": "grin"
+  },
+  {
+   "t": 22.1,
+   "pose": "celebrate",
+   "mood": "grin",
+   "hop": true
+  },
+  {
+   "t": 23.2,
+   "pose": "thumbs",
+   "mood": "grin"
+  },
+  {
+   "t": 25.25,
+   "pose": "celebrate",
+   "mood": "grin",
+   "hop": true
+  },
+  {
+   "t": 26.5,
+   "pose": "point",
+   "mood": "smile"
+  },
+  {
+   "t": 33.5,
+   "pose": "wave",
+   "mood": "grin"
+  }
+ ],
+ "sfx": [
+  {
+   "t": 0.0,
+   "type": "thump",
+   "gain": 1.0
+  },
+  {
+   "t": 0.0,
+   "type": "printer"
+  },
+  {
+   "t": 0.2,
+   "type": "printer"
+  },
+  {
+   "t": 0.45,
+   "type": "printer"
+  },
+  {
+   "t": 0.5,
+   "type": "tick",
+   "gain": 0.7
+  },
+  {
+   "t": 0.7,
+   "type": "printer"
+  },
+  {
+   "t": 0.95,
+   "type": "printer"
+  },
+  {
+   "t": 1.0,
+   "type": "tick",
+   "gain": 0.7
+  },
+  {
+   "t": 1.25,
+   "type": "printer"
+  },
+  {
+   "t": 1.5,
+   "type": "tick",
+   "gain": 0.7
+  },
+  {
+   "t": 1.6,
+   "type": "printer"
+  },
+  {
+   "t": 2.0,
+   "type": "printer"
+  },
+  {
+   "t": 2.0,
+   "type": "tick",
+   "gain": 0.7
+  },
+  {
+   "t": 2.5,
+   "type": "printer"
+  },
+  {
+   "t": 2.5,
+   "type": "tick",
+   "gain": 0.7
+  },
+  {
+   "t": 3.0,
+   "type": "tick",
+   "gain": 0.7
+  },
+  {
+   "t": 3.1,
+   "type": "printer"
+  },
+  {
+   "t": 3.5,
+   "type": "tick",
+   "gain": 0.7
+  },
+  {
+   "t": 4.0,
+   "type": "tick",
+   "gain": 0.7
+  },
+  {
+   "t": 4.5,
+   "type": "tick",
+   "gain": 0.7
+  },
+  {
+   "t": 5.15,
+   "type": "whoosh"
+  },
+  {
+   "t": 6.65,
+   "type": "pop"
+  },
+  {
+   "t": 6.7,
+   "type": "ding",
+   "gain": 0.8
+  },
+  {
+   "t": 7.3,
+   "type": "chalk",
+   "dur": 0.55
+  },
+  {
+   "t": 9.3,
+   "type": "chalk",
+   "dur": 0.55
+  },
+  {
+   "t": 11.95,
+   "type": "whoosh"
+  },
+  {
+   "t": 12.05,
+   "type": "whoosh"
+  },
+  {
+   "t": 14.0,
+   "type": "chalk",
+   "dur": 0.5
+  },
+  {
+   "t": 14.8,
+   "type": "tick"
+  },
+  {
+   "t": 15.5,
+   "type": "chalk",
+   "dur": 0.5
+  },
+  {
+   "t": 16.3,
+   "type": "tick"
+  },
+  {
+   "t": 16.9,
+   "type": "chalk",
+   "dur": 0.5
+  },
+  {
+   "t": 17.7,
+   "type": "tick"
+  },
+  {
+   "t": 18.85,
+   "type": "whoosh"
+  },
+  {
+   "t": 20.0,
+   "type": "bell",
+   "gain": 0.8
+  },
+  {
+   "t": 20.5,
+   "type": "tick",
+   "gain": 0.6
+  },
+  {
+   "t": 20.82,
+   "type": "tick",
+   "gain": 0.6
+  },
+  {
+   "t": 21.14,
+   "type": "tick",
+   "gain": 0.6
+  },
+  {
+   "t": 21.46,
+   "type": "tick",
+   "gain": 0.6
+  },
+  {
+   "t": 21.78,
+   "type": "tick",
+   "gain": 0.6
+  },
+  {
+   "t": 22.1,
+   "type": "bell",
+   "gain": 1.0
+  },
+  {
+   "t": 22.1,
+   "type": "pop"
+  },
+  {
+   "t": 23.15,
+   "type": "whoosh",
+   "gain": 0.6
+  },
+  {
+   "t": 25.25,
+   "type": "bell",
+   "gain": 0.8
+  },
+  {
+   "t": 25.25,
+   "type": "pop"
+  },
+  {
+   "t": 26.65,
+   "type": "whoosh"
+  },
+  {
+   "t": 26.7,
+   "type": "thump",
+   "gain": 0.7
+  },
+  {
+   "t": 27.4,
+   "type": "pop"
+  },
+  {
+   "t": 27.9,
+   "type": "pop"
+  },
+  {
+   "t": 28.4,
+   "type": "pop"
+  },
+  {
+   "t": 33.35,
+   "type": "whoosh"
+  },
+  {
+   "t": 33.8,
+   "type": "pop"
+  },
+  {
+   "t": 34.4,
+   "type": "bell",
+   "gain": 0.7
+  }
+ ],
+ "still_times": [
+  0.0,
+  0.8,
+  1.5,
+  4.5,
+  7.2,
+  10.5,
+  14.0,
+  17.9,
+  19.5,
+  22.3,
+  24.0,
+  25.6,
+  28.5,
+  31.5,
+  34.5,
+  37.8
+ ]
+}

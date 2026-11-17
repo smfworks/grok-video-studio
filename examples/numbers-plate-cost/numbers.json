@@ -1,0 +1,27 @@
+{
+ "title": "Grilled Salmon Plate",
+ "kind": "plate",
+ "currency": "$",
+ "example": true,
+ "source": "plate_cost_sheet.csv (made-up example sheet)",
+ "hook": "What does one plate really cost?",
+ "scenes": [
+  {"type": "breakdown", "title": "Cost per plate",
+   "items": [
+    {"label": "Salmon fillet", "detail": "6 oz", "value": 5.40, "cell": "E4", "qty": {"value": 0.375, "cell": "B4"}, "unit_cost": {"value": 14.40, "cell": "D4"}},
+    {"label": "Jasmine rice", "detail": "6 oz", "value": 0.60, "cell": "E5", "qty": {"value": 0.375, "cell": "B5"}, "unit_cost": {"value": 1.60, "cell": "D5"}},
+    {"label": "Asparagus", "detail": "4 oz", "value": 1.20, "cell": "E6", "qty": {"value": 0.25, "cell": "B6"}, "unit_cost": {"value": 4.80, "cell": "D6"}},
+    {"label": "Lemon butter sauce", "detail": "2 oz", "value": 0.70, "cell": "E7", "qty": {"value": 2, "cell": "B7"}, "unit_cost": {"value": 0.35, "cell": "D7"}},
+    {"label": "Garnish", "detail": "lemon, herbs", "value": 0.25, "cell": "E8", "qty": {"value": 1, "cell": "B8"}, "unit_cost": {"value": 0.25, "cell": "D8"}},
+    {"label": "Bread and butter", "value": 0.45, "cell": "E9", "qty": {"value": 1, "cell": "B9"}, "unit_cost": {"value": 0.45, "cell": "D9"}}
+   ],
+   "total": {"value": 8.60, "cell": "E10", "label": "Total plate cost"},
+   "price": {"value": 28.00, "cell": "E12", "label": "Menu price"}},
+  {"type": "annualize", "title": "Trim 2 points off this plate",
+   "cost": {"value": 8.60, "cell": "E10", "label": "Total plate cost"},
+   "price": {"value": 28.00, "cell": "E12", "label": "Menu price"}, "points": 2,
+   "volume": {"value": 120, "cell": "E13", "label": "plates a week"}, "periods": 52, "period_label": "weeks"}
+ ],
+ "end": ["Your sheet. Your numbers.", "Drawn sharp, to the cent."],
+ "credit": "AI-generated with Grok Bot Video Studio"
+}
