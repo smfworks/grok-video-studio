@@ -4,7 +4,7 @@ Production scripts for the **Grok Bot Video Studio** template: an end-to-end vid
 
 The Grok Bot template carries the profile, skills and routines. This repo carries the code those skills call. The template's setup skill fetches **one pinned tag/commit**, checks its hash, runs the tests, and installs into `/workspace/vstudio/`.
 
-**Version: 1.1.0** (see [VERSION](VERSION) and [CHANGELOG.md](CHANGELOG.md)). Grok Bot Video Studio template v10 requires grok-video-studio v1.1.0; template v9 uses v1.0.0.
+**Version: 1.2.0** (see [VERSION](VERSION) and [CHANGELOG.md](CHANGELOG.md)). Grok Bot Video Studio template v10 requires grok-video-studio v1.1.0 or later; template v9 uses v1.0.0.
 
 ## What's here
 | Script | Purpose |
@@ -19,6 +19,7 @@ The Grok Bot template carries the profile, skills and routines. This repo carrie
 | `vstudio_beats.py` | Beat detection and beat-aligned shot slots |
 | `vstudio_pack.py` | Character-pack validation, import screening, owner-likeness consent |
 | `vstudio_media.py` | ffprobe helpers |
+| `vstudio_film_grade.py` | Film look (light/medium/strong): print the ffmpeg filter, or apply it to a file (audio copied untouched), plus a side-by-side compare still and a 2.39:1 letterbox head-room check. Letterbox defaults off on vertical frames |
 
 ### Code-drawn kits (`kits/`, installed to `$VSTUDIO_HOME/kits/`, 0 AI generations)
 | Kit | Purpose |

@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.2.0 (2026-11-21)
+
+### Added
+- **Film grade** (`scripts/vstudio_film_grade.py`): light, medium and strong film look (muted saturation, warmth, soft highlights, grain, halation, vignette and gate weave) with optional 2.39:1 letterbox and per-shot `--yoff` for head-room. Prints an ffmpeg filter string, or `apply` / `compare` / `headroom` modes. Letterbox defaults off on vertical or square frames; `--letterbox` forces it on. Medium at 1920x1080, 24 fps, is filter-string identical to the original grade.
+- `tests/test_film_grade.py`: filter-string building tests (no ffmpeg required).
+
+The music-video v2 lessons (mixed short and long shots, detail inserts, the Medium film grade, letterbox head-room checks, and still-fault catch list) live in the vstudio-music-video skill; this tool is the reusable grade those lessons call. This repo has no separate docs folder.
+
+
 ## 1.1.0 (2026-11-17)
 Required by Grok Bot Video Studio template v10. Everything new is code-drawn: 0 AI image or video generations.
 
