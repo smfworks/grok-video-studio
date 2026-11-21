@@ -1,10 +1,10 @@
 # Grok Video Studio
 
-Production scripts for the **Grok Bot Video Studio** template: an end-to-end video bot (explainers, avatar shorts, sequenced stories with character locks, music videos, code-drawn promos, Numbers on Screen explainers, Fix It case studies and reusable visual kits) that runs on Grok Imagine and, opt-in, the xAI API.
+Production scripts for the **Grok Bot Video Studio** template: an end-to-end video bot (explainers, avatar shorts, sequenced stories with character locks, music videos, code-drawn promos, beat-cut strobe ads, Numbers on Screen explainers, Fix It case studies and reusable visual kits) that runs on Grok Imagine and, opt-in, the xAI API.
 
 The Grok Bot template carries the profile, skills and routines. This repo carries the code those skills call. The template's setup skill fetches **one pinned tag/commit**, checks its hash, runs the tests, and installs into `/workspace/vstudio/`.
 
-**Version: 1.2.0** (see [VERSION](VERSION) and [CHANGELOG.md](CHANGELOG.md)). Grok Bot Video Studio template v10 requires grok-video-studio v1.1.0 or later; template v9 uses v1.0.0.
+**Version: 1.3.0** (see [VERSION](VERSION) and [CHANGELOG.md](CHANGELOG.md)). The template build with the Strobe ad video type requires grok-video-studio v1.3.0; the previous build uses v1.2.0, template v10 requires v1.1.0 or later, and template v9 uses v1.0.0.
 
 ## What's here
 | Script | Purpose |
@@ -20,6 +20,9 @@ The Grok Bot template carries the profile, skills and routines. This repo carrie
 | `vstudio_pack.py` | Character-pack validation, import screening, owner-likeness consent |
 | `vstudio_media.py` | ffprobe helpers |
 | `vstudio_film_grade.py` | Film look (light/medium/strong): print the ffmpeg filter, or apply it to a file (audio copied untouched), plus a side-by-side compare still and a 2.39:1 letterbox head-room check. Letterbox defaults off on vertical frames |
+| `vstudio_strobe_cut.py` | Beat-synced strobe cutter: `plan` an EDL from a music info file and an asset manifest (cuts on every tick, holds on bass hits, waves, key-line holds, use cap with free variants, wave balancing, resolved or loop ending), `check` its rules, `render` with the wordmark, grain and AI end label (9:16, 16:9, 1:1; optional size cap for X) |
+| `vstudio_brand_frames.py` | Brand system from a name + one accent hex: auto black/white wordmark with halo, grain + halftone, message-frame layouts (swiss, terminal, type, statement, list, index) and textures, eye-line-safe composites, AI label, contact sheets |
+| `vstudio_audio_finish.py` | Short music beds: beat grid and downbeats, bar-exact body or bar-line loop, resolved final-hit ending (or fade / loop), synthesized ratchet risers into each wave, loop-seam masking, -14 LUFS / TP <= -1 dBTP |
 
 ### Code-drawn kits (`kits/`, installed to `$VSTUDIO_HOME/kits/`, 0 AI generations)
 | Kit | Purpose |
@@ -33,6 +36,18 @@ The Grok Bot template carries the profile, skills and routines. This repo carrie
 
 `examples/` holds the made-up fixtures the tests use (a plate-cost sheet and a Fix It case.json, both labeled as examples).
 
+## Strobe ad (v1.3.0)
+A 15-25 s brand ad cut to the beat: stills, short clips and code-drawn message frames under a fixed centred wordmark, in one accent colour. The template skill `vstudio-strobe-ad` covers the brief and approval gates; the code path is:
+```bash
+B=/workspace/vstudio/bin
+python3 $B/vstudio_brand_frames.py frames frames_spec.json frames --preview          # message frames + frames.json
+python3 $B/vstudio_audio_finish.py analyze song.wav analysis.json                      # check tempo / downbeat
+python3 $B/vstudio_audio_finish.py finish song.wav music.wav --info music.json --bars 12 --waves 3 --ending hit
+python3 $B/vstudio_strobe_cut.py plan manifest.json music.json edl.json                # exit 2 = a rule failed
+python3 $B/vstudio_strobe_cut.py render manifest.json edl.json final.mp4 --audio music.wav --thumbnail thumb.jpg --max-mb 95
+```
+Nothing is brand-specific: the brand name and accent come from the spec and manifest (formats in each script's header docstring). Message copy must come from the owner's own text, and characters must be fictional (or the owner, with consent, on the xAI route only).
+
 ## Install and test
 ```bash
 bash install.sh /workspace/vstudio         # scripts, kits, config, pinned Piper + voice and kit fonts (sha256-checked), Python deps
@@ -44,6 +59,7 @@ Needs Linux x86_64, Python 3.11+, ffmpeg with libass/freetype, and fontconfig wi
 - The xAI video and TTS adapters are tested against the documented request/response shapes (mocked HTTP plus a real local HTTP server). **Live API verification is pending** until an owner runs a first call with their own key. The case-study kit's opt-in xAI TTS route was verified live while making the template v10 sample (11 cues).
 - The Piper voice test runs real TTS end to end and checks the transcript match (≥ 0.95).
 - The kit tests render frames for every layout, check figure provenance, client-permission and example-label gates, and build a Visual Kit (no network, no keys).
+- The strobe tests generate their own images, test clip and drum-and-bass track, check the cut rules and audio ending, and render a small end-to-end video (no network, no keys).
 
 ## License
 MIT. See [LICENSE](LICENSE) and [CREDITS](CREDITS).
