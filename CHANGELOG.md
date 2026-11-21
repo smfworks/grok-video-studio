@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.3.0 (2026-11-21)
+Required by the Grok Bot Video Studio template build that adds the **Strobe ad** video type (skill `vstudio-strobe-ad`). All three tools are code only: 0 AI generations, no network, no downloads.
+
+### Added
+- **Strobe cutter** (`scripts/vstudio_strobe_cut.py`): `plan` turns a music info file and an asset manifest (hero / object / message / texture stills, short clips, code-drawn frames) into a beat-locked EDL; `check` re-verifies its rules; `render` draws every frame (fixed wordmark, grain + halftone, AI label on the end hold) and encodes BT.709 H.264 with the music, plus an optional size-capped copy (`--max-mb 95` for X) and a frame-0 thumbnail. One cut per grid tick (1/8, 1/16 or 1/32 bar, picked so a tick is about 2-3 frames), 2-unit cells on every downbeat, N waves that open fast, slow down and end on holds, key-line holds of at least max(1.3 s, 0.1 s per word) snapped to beats, clips placed on bar lines, a per-asset use cap (default 4) with free variants (mirror flip, punch-in crop, accent duotone; never a mirrored text frame) before the cap is ever broken, wave cut-count balancing (default 15%), a fast final bar into a resolved ending or a loop-safe ending, and 9:16 / 16:9 / 1:1 output from the same EDL.
+- **Brand frames** (`scripts/vstudio_brand_frames.py`): a brand system driven only by a brand name and one accent hex colour. Centred wordmark with an accent mark (square, dot, asterisk or none) that flips black or white from the luminance behind it, a soft halo on busy backgrounds and a text-coloured mark on accent backgrounds; grain + halftone pass; accent duotone; message-frame layouts (swiss poster, terminal, pure type, statement, list, index) that keep every text block out of the wordmark band and the bottom platform-UI zone in all three aspects; halftone, flash and ring textures; the small "AI GENERATED" end label; eye-line re-framing (`clear_y`: moves the crop window, then shifts the picture) that keeps a face's eyes off the wordmark on frame 0 and the thumbnail in every aspect; Gate-1 composites and labelled contact sheets. Fonts: Anton / Archivo Black / IBM Plex Mono when installed, otherwise Inter (installed by install.sh) and DejaVu.
+- **Audio finish** (`scripts/vstudio_audio_finish.py`): `analyze` fits a straight beat grid (tempo folded into 90-180 BPM, refined on onsets) and finds the downbeats from low-end energy (the bass hits) and the last strong downbeat; `finish` builds a bar-exact body (optionally a section looped on the bar line), ends on a final downbeat hit with its natural decay and a synthetic hall tail (or a bar-line fade, or a loop-safe cut) instead of stopping mid-note, adds synthesized ratchet risers into each wave and the final hit, masks loop seams with a half-bar ratchet and sub boom, and normalizes to -14 LUFS with true peak <= -1 dBTP (two-pass linear loudnorm, limiter fallback). Writes the music info JSON the cutter reads. ffmpeg + numpy (librosa only for `analyze`).
+- `tests/test_strobe.py` (34 tests): brand, layout band-clearance in every aspect, eye-line shift, audio grid/ending/risers/loudness, cutter rules (downbeats on cuts, key holds, use cap and variants, wave balance, loop ending, rule-check failures) and a small end-to-end render. All fixtures (images, a test clip, a synthetic drum-and-bass track) are generated in code.
+
+### Changed
+- Nothing in the existing scripts, kits, installer, requirements or CI changed; install.sh already copies every `scripts/*.py`.
+
 ## 1.2.0 (2026-11-21)
 
 ### Added
