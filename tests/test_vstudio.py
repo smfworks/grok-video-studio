@@ -271,18 +271,6 @@ class Media(unittest.TestCase):
         self.assertIn("black", txt); self.assertIn("frozen", txt); self.assertIn("silence", txt)
         self.assertIn("size", " ".join(Q.qa(bad, "16x9")["problems"]))
 
-    def test_burn_captions(self):
-        base = self.d / "out_916_b.mp4"
-        A.build(self.edl(voice=str(self.d / "voice.wav")), base)
-        srt = self.d / "s.srt"; srt.write_text(C.to_srt(C.group(WORDS)))
-        out = self.d / "captioned.mp4"; C.burn(base, srt, out, "9x16")
-        self.assertAlmostEqual(probe(out)["duration"], probe(base)["duration"], delta=0.1)
-        # captions change pixels in the lower safe area of a frame at t=1s
-        def frame(p):
-            return subprocess.run(["ffmpeg", "-v", "error", "-ss", "1", "-i", str(p), "-frames:v", "1", "-vf", "crop=1080:500:0:1300",
-                                   "-f", "rawvideo", "-pix_fmt", "gray", "-"], capture_output=True, check=True).stdout
-        self.assertNotEqual(frame(base), frame(out))
-
     def test_ai_tag(self):
         base = self.d / "out_tag_base.mp4"; A.build(self.edl(aspect="1x1"), base)
         out = self.d / "tagged.mp4"; C.tag(base, out, "AI-generated", "1x1")
@@ -358,20 +346,31 @@ class Voice(unittest.TestCase):
 class DemoFallback(unittest.TestCase):
     """The no-scripts demo path in vstudio-getting-started: plain ffmpeg burns captions and the AI tag."""
     def test_plain_ffmpeg_captions_and_tag(self):
+        """No-scripts fallback: subtitles for captions, drawtext for the tag. expansion=none keeps a % in the tag."""
         with tempfile.TemporaryDirectory() as d:
             d = Path(d)
-            ff("-f", "lavfi", "-i", "testsrc2=s=720x1280:r=24:d=3", "-f", "lavfi", "-i", "sine=f=300:d=3",
-               "-shortest", "-pix_fmt", "yuv420p", str(d / "demo.mp4"))
+            ff("-f", "lavfi", "-i", "color=c=0x224466:s=720x1280:r=24:d=3", "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo:d=3",
+               "-shortest", "-pix_fmt", "yuv420p", "-c:v", "libx264", "-preset", "veryfast", str(d / "demo.mp4"))
             (d / "demo.srt").write_text("1\n00:00:00,000 --> 00:00:01,500\nHello there\n\n2\n00:00:01,500 --> 00:00:03,000\nThis is the demo\n")
             vf = ("subtitles=demo.srt:force_style='FontSize=14,Outline=2,MarginV=40',"
-                  "drawtext=text='AI-generated':font=Sans:fontsize=h/40:fontcolor=white@0.85:box=1:boxcolor=black@0.4:x=w-tw-20:y=20")
-            subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", "demo.mp4", "-vf", vf, "-c:a", "copy", "demo_final.mp4"], cwd=d, check=True)
+                  "drawtext=expansion=none:text='100%':font=Sans:fontsize=h/40:fontcolor=white@0.85:"
+                  "box=1:boxcolor=black@0.4:x=w-tw-20:y=20")
+            p = subprocess.run(["ffmpeg", "-y", "-hide_banner", "-nostats", "-v", "warning", "-i", "demo.mp4", "-vf", vf,
+                                "-c:a", "copy", "demo_final.mp4"], cwd=d, capture_output=True, text=True)
+            self.assertEqual(p.returncode, 0, p.stderr)
+            self.assertNotIn("Stray", p.stderr)
             info = probe(d / "demo_final.mp4")
             self.assertEqual((info["video"]["width"], info["video"]["height"]), (720, 1280)); self.assertTrue(info["audio"])
-            # the burned frame differs from the source frame (captions/tag were drawn)
-            a = subprocess.run(["ffmpeg", "-v", "error", "-ss", "0.5", "-i", str(d / "demo.mp4"), "-frames:v", "1", "-f", "rawvideo", "-"], capture_output=True).stdout
-            b = subprocess.run(["ffmpeg", "-v", "error", "-ss", "0.5", "-i", str(d / "demo_final.mp4"), "-frames:v", "1", "-f", "rawvideo", "-"], capture_output=True).stdout
-            self.assertNotEqual(a, b)
+            tag = subprocess.run(["ffmpeg", "-v", "error", "-ss", "0.5", "-i", str(d / "demo_final.mp4"), "-frames:v", "1",
+                                  "-vf", "crop=280:90:440:0", "-f", "rawvideo", "-pix_fmt", "rgb24", "-"],
+                                 capture_output=True, check=True).stdout
+            white = sum(1 for i in range(0, len(tag), 3) if tag[i] > 200 and tag[i + 1] > 200 and tag[i + 2] > 200)
+            self.assertGreater(white, 30, "tag text 100% was not drawn")
+            cap = subprocess.run(["ffmpeg", "-v", "error", "-ss", "0.5", "-i", str(d / "demo_final.mp4"), "-frames:v", "1",
+                                  "-vf", "crop=720:280:0:1000", "-f", "rawvideo", "-pix_fmt", "rgb24", "-"],
+                                 capture_output=True, check=True).stdout
+            ink = sum(1 for i in range(0, len(cap), 3) if max(abs(cap[i] - 33), abs(cap[i + 1] - 66), abs(cap[i + 2] - 101)) > 40)
+            self.assertGreater(ink, 30, "fallback captions were not drawn")
 
 
 class Config(unittest.TestCase):

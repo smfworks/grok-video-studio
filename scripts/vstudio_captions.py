@@ -8,10 +8,10 @@
 
 WORDS.json: [{"word": str, "start": s, "end": s}, ...] (faster-whisper word timestamps or TTS timestamps).
 """
-import argparse, json, sys
+import argparse, json, sys, tempfile
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vstudio_media import ASPECTS, SAFE_BOTTOM, run
+from vstudio_media import ASPECTS, SAFE_BOTTOM, ffmpeg_filter_path, run
 
 
 def ts(t):
@@ -74,16 +74,57 @@ def check(cues, max_cps=20.0):
     return problems
 
 
+def ass_time(t):
+    cs = int(round(max(0.0, t) * 100))
+    h, cs = divmod(cs, 360000); m, cs = divmod(cs, 6000); s, cs = divmod(cs, 100)
+    return f"{h}:{m:02d}:{s:02d}.{cs:02d}"
+
+
+def ass_text(text):
+    return text.replace("\\", "\\\\").replace("{", "\\{").replace("}", "\\}").replace("\n", "\\N")
+
+
+def ass_document(cues, width, height, font, size, margin):
+    """ASS whose PlayRes is the frame, so FontSize and MarginV are real pixels."""
+    if "," in font:
+        raise ValueError(f"font name must not contain a comma: {font}")
+    lines = [
+        "[Script Info]",
+        "ScriptType: v4.00+",
+        f"PlayResX: {width}",
+        f"PlayResY: {height}",
+        "ScaledBorderAndShadow: yes",
+        "WrapStyle: 0",
+        "",
+        "[V4+ Styles]",
+        "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, "
+        "Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, "
+        "Alignment, MarginL, MarginR, MarginV, Encoding",
+        f"Style: Default,{font},{size},&H00FFFFFF,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,3,0,2,40,40,{margin},1",
+        "",
+        "[Events]",
+        "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text",
+    ]
+    for c in cues:
+        lines.append(f"Dialogue: 0,{ass_time(c['start'])},{ass_time(c['end'])},Default,,0,0,0,,{ass_text(c['text'])}")
+    return "\n".join(lines) + "\n"
+
+
 def burn(inp, srt, out, aspect, font="DejaVu Sans", size=None):
     w, h = ASPECTS[aspect]
     size = size or int(h * (0.032 if aspect == "16x9" else 0.026))
     margin = int(h * SAFE_BOTTOM[aspect])
-    style = (f"FontName={font},FontSize={size},PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,"
-             f"BorderStyle=1,Outline=3,Shadow=0,Alignment=2,MarginV={margin}")
-    srt_esc = str(Path(srt).resolve()).replace("\\", "\\\\").replace(":", "\\:").replace("'", "\\'")
-    run(["ffmpeg", "-y", "-v", "error", "-i", str(inp), "-vf",
-         f"subtitles='{srt_esc}':original_size={w}x{h}:force_style='{style}'",
-         "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "copy", str(out)])
+    # SRT through the subtitles filter keeps libass PlayRes at 384x288, so a 9:16 MarginV
+    # lands off screen and 16:9 / 1:1 type is scaled up. An ASS file with the frame PlayRes
+    # makes FontSize and MarginV mean pixels of this video.
+    doc = ass_document(read_srt(srt), w, h, font, size, margin)
+    with tempfile.TemporaryDirectory() as td:
+        ass = Path(td) / "captions.ass"
+        ass.write_text(doc)
+        run(["ffmpeg", "-y", "-hide_banner", "-nostats", "-v", "warning", "-i", str(inp),
+             "-vf", f"ass='{ffmpeg_filter_path(ass)}'",
+             "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "copy", str(out)],
+            strict_stderr=True)
     return out
 
 
@@ -95,14 +136,22 @@ def find_font():
 
 
 def tag(inp, out, text="AI-generated", aspect="9x16"):
-    """Burn a small disclosure tag in the top-right corner for the whole video."""
-    w, h = ASPECTS[aspect]
+    """Burn a small disclosure tag in the top-right corner for the whole video.
+
+    The label is passed through a text file with expansion=none, so characters such as % are drawn
+    as themselves. ffmpeg warnings fail the command instead of leaving a blank tag.
+    """
+    _w, h = ASPECTS[aspect]
     size = max(18, int(h * 0.022)); pad = int(h * 0.03)
-    t = text.replace("\\", "\\\\").replace(":", "\\:").replace("'", "\\'")
-    vf = (f"drawtext=fontfile='{find_font()}':text='{t}':fontsize={size}:fontcolor=white@0.9:"
-          f"box=1:boxcolor=black@0.45:boxborderw={size // 3}:x=w-tw-{pad}:y={pad}")
-    run(["ffmpeg", "-y", "-v", "error", "-i", str(inp), "-vf", vf, "-c:v", "libx264", "-preset", "medium",
-         "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "copy", str(out)])
+    with tempfile.TemporaryDirectory() as td:
+        text_path = Path(td) / "tag.txt"
+        text_path.write_text(text)
+        vf = (f"drawtext=fontfile='{ffmpeg_filter_path(find_font())}':textfile='{ffmpeg_filter_path(text_path)}':"
+              f"expansion=none:fontsize={size}:fontcolor=white@0.9:"
+              f"box=1:boxcolor=black@0.45:boxborderw={size // 3}:x=w-tw-{pad}:y={pad}")
+        run(["ffmpeg", "-y", "-hide_banner", "-nostats", "-v", "warning", "-i", str(inp), "-vf", vf,
+             "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "copy", str(out)],
+            strict_stderr=True)
     return out
 
 

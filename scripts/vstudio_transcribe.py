@@ -4,9 +4,11 @@
   vstudio_transcribe.py words AUDIO OUT.json [--model small] [--language en]
   vstudio_transcribe.py match AUDIO --script SCRIPT.txt [--min 0.95] [--keyterms A,B] [--model small]
 
+The default model is "small". Set VSTUDIO_WHISPER_MODEL (or pass --model) to use another size.
+
 `words` writes [{"word","start","end"}] for vstudio_captions.py. `match` prints {ok, score, missing_keyterms}.
 """
-import argparse, difflib, json, re, sys
+import argparse, difflib, json, os, re, sys
 from pathlib import Path
 
 _NUM = {"0": "zero", "1": "one", "2": "two", "3": "three", "4": "four", "5": "five", "6": "six", "7": "seven", "8": "eight", "9": "nine", "10": "ten"}
@@ -30,7 +32,12 @@ def missing_keyterms(keyterms, heard):
     return [k for k in keyterms if k.strip() and " " + " ".join(norm(k)) + " " not in h]
 
 
-def transcribe(audio, model="small", language="en"):
+def whisper_model(model=None):
+    return model or os.environ.get("VSTUDIO_WHISPER_MODEL", "small")
+
+
+def transcribe(audio, model=None, language="en"):
+    model = whisper_model(model)
     import subprocess, numpy as np
     from faster_whisper import WhisperModel
     pcm = subprocess.run(["ffmpeg", "-v", "error", "-i", str(audio), "-ac", "1", "-ar", "16000", "-f", "f32le", "-"],
@@ -51,7 +58,7 @@ def main(argv=None):
     m = sub.add_parser("match"); m.add_argument("audio"); m.add_argument("--script", required=True)
     m.add_argument("--min", type=float, default=0.95); m.add_argument("--keyterms", default="")
     for p in (w, m):
-        p.add_argument("--model", default="small"); p.add_argument("--language", default="en")
+        p.add_argument("--model", default=None); p.add_argument("--language", default="en")
     a = ap.parse_args(argv)
     words = transcribe(a.audio, a.model, a.language)
     if a.cmd == "words":

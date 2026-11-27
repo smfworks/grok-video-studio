@@ -2,8 +2,35 @@
 # Grok Video Studio installer: copies scripts/config/kits into $VSTUDIO_HOME and installs Piper TTS and the kit fonts at pinned, hash-checked URLs.
 # Usage: ./install.sh [VSTUDIO_HOME]   (default /workspace/vstudio)
 set -euo pipefail
-HOME_DIR="${1:-/workspace/vstudio}"
 SRC="$(cd "$(dirname "$0")" && pwd)"
+
+# Debian and Ubuntu mark the system Python as externally managed (PEP 668).
+# Detect that before pip runs, and pass --break-system-packages on the first call,
+# so a normal install does not print an externally-managed-environment error.
+# When the imports already succeed, pip is not run.
+python_deps_ready() {
+  python3 -c "import numpy, librosa, faster_whisper, PIL, openpyxl, requests" >/dev/null 2>&1
+}
+python_externally_managed() {
+  python3 -c 'import sysconfig; from pathlib import Path; import sys; sys.exit(0 if (Path(sysconfig.get_path("stdlib")) / "EXTERNALLY-MANAGED").is_file() else 1)'
+}
+install_python_deps() {
+  if python_deps_ready; then
+    return 0
+  fi
+  if python_externally_managed; then
+    python3 -m pip install --quiet --break-system-packages -r "$SRC/requirements.txt"
+  else
+    python3 -m pip install --quiet -r "$SRC/requirements.txt" \
+      || python3 -m pip install --quiet --break-system-packages -r "$SRC/requirements.txt"
+  fi
+}
+if [ "${1:-}" = "--deps-only" ]; then
+  install_python_deps
+  exit 0
+fi
+
+HOME_DIR="${1:-/workspace/vstudio}"
 PIPER_URL="https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_linux_x86_64.tar.gz"
 PIPER_SHA="a50cb45f355b7af1f6d758c1b360717877ba0a398cc8cbe6d2a7a3a26e225992"
 VOICE_BASE="https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/en/en_US/ljspeech/high"
@@ -44,6 +71,5 @@ F="$HOME_DIR/fonts"
 [ -f "$F/Kalam-Bold.ttf" ] || fetch "$FONT_BASE/kalam/Kalam-Bold.ttf" "$F/Kalam-Bold.ttf" "$KALAM_SHA"
 [ -f "$F/Inter-VariableFont_opsz,wght.ttf" ] || fetch "$FONT_BASE/inter/Inter%5Bopsz,wght%5D.ttf" "$F/Inter-VariableFont_opsz,wght.ttf" "$INTER_SHA"
 
-python3 -c "import numpy, librosa, faster_whisper, PIL, openpyxl, requests" 2>/dev/null || python3 -m pip install --quiet -r "$SRC/requirements.txt" \
-  || python3 -m pip install --quiet --break-system-packages -r "$SRC/requirements.txt"
+install_python_deps
 echo "installed $(cat "$SRC/VERSION") to $HOME_DIR"
