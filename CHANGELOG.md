@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.3.1 (2026-11-27)
+First-run fixes for the Grok Bot Video Studio template. No model pins, kit assets, pricing, or budget rules changed.
+
+### Fixed
+- **Caption burn** (`vstudio_captions.py burn`): captions are written to an ASS script whose PlayRes matches the frame (ScaledBorderAndShadow on, same font, size, outline, bottom alignment and MarginV). On 9:16 the line stays inside the frame. On 16:9 and 1:1 the type stays at the existing size (3.2% of height on 16:9, 2.6% otherwise) and the existing bottom margin. The CLI is unchanged. ffmpeg warnings from burn and tag fail the command.
+- **AI tag** (`vstudio_captions.py tag`): the label is drawn from a text file with drawtext `expansion=none`, so a percent sign, colon or quote is shown. Film-grade compare labels use `expansion=none` as well.
+- **Installer** (`install.sh`): if Python's stdlib directory contains the PEP 668 `EXTERNALLY-MANAGED` marker, pip is invoked once with `--break-system-packages`. A first install on Debian or Ubuntu no longer prints `externally-managed-environment` before succeeding. If the imports already work, pip is not run.
+
+### Added
+- **Normalize** (`vstudio_media.py normalize IN OUT --aspect 9x16`): maps the first real video stream (attached cover art is skipped) and the first audio stream, scales and center-crops to the aspect, sets SAR 1:1, and writes 48 kHz stereo AAC. `probe` ignores attached pictures.
+- **Clip loudness** (`vstudio_media.py loudness IN OUT --lufs -14 --tp -1.5 [--bed]`): two-pass linear loudnorm via `vstudio_audio_finish.normalize`, output forced to 48 kHz. `--bed` mixes a quiet brown-noise bed so sparse sound effects pass the silence check. A clip that should keep its gaps omits `--bed`; QA then uses `--allow-silence`. Prints the measured loudness as JSON.
+- **Smoke tests** (`python3 tests/smoke.py`): first-install check covering captions, normalize, loudness, the AI tag and the installer logic. Piper, faster-whisper, kit renders and the strobe render stay in the full suite. `VSTUDIO_WHISPER_MODEL` selects the faster-whisper size (default `small`).
+
 ## 1.3.0 (2026-11-21)
 Required by the Grok Bot Video Studio template build that adds the **Strobe ad** video type (skill `vstudio-strobe-ad`). All three tools are code only: 0 AI generations, no network, no downloads.
 

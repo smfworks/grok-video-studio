@@ -213,7 +213,7 @@ def compare_stills(src, dst, time_s=0.0, size=DEFAULT_SIZE, fps=DEFAULT_FPS,
         font = "Sans"
         for (name, _), p in zip(labels, parts):
             lp = td / f"lbl_{p.name}"
-            dt = (f"drawtext=text='{name}':font={font}:fontsize=28:"
+            dt = (f"drawtext=expansion=none:text='{name}':font={font}:fontsize=28:"
                   f"fontcolor=white:box=1:boxcolor=black@0.55:x=12:y=12")
             try:
                 _run(["ffmpeg", "-nostdin", "-y", "-v", "error", "-i", str(p),

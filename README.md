@@ -4,7 +4,7 @@ Production scripts for the **Grok Bot Video Studio** template: an end-to-end vid
 
 The Grok Bot template carries the profile, skills and routines. This repo carries the code those skills call. The template's setup skill fetches **one pinned tag/commit**, checks its hash, runs the tests, and installs into `/workspace/vstudio/`.
 
-**Version: 1.3.0** (see [VERSION](VERSION) and [CHANGELOG.md](CHANGELOG.md)). The template build with the Strobe ad video type requires grok-video-studio v1.3.0; the previous build uses v1.2.0, template v10 requires v1.1.0 or later, and template v9 uses v1.0.0.
+**Version: 1.3.1** (see [VERSION](VERSION) and [CHANGELOG.md](CHANGELOG.md)). v1.3.1 is the current release and keeps the v1.3.0 Strobe ad tools. The template build with the Strobe ad video type requires grok-video-studio v1.3.0 or later; the previous build uses v1.2.0, template v10 requires v1.1.0 or later, and template v9 uses v1.0.0.
 
 ## What's here
 | Script | Purpose |
@@ -13,12 +13,12 @@ The Grok Bot template carries the profile, skills and routines. This repo carrie
 | `vstudio_providers.py` | xAI Imagine API adapter (`generate`: submit/poll/download) and xAI TTS (`tts`: `POST /v1/tts`), with cap checks, logging and capped retries. Key from `XAI_API_KEY` only |
 | `vstudio_voice.py` | Local narration with Piper TTS (free, no key) |
 | `vstudio_transcribe.py` | Local speech-to-text (faster-whisper), script-match scoring |
-| `vstudio_captions.py` | SRT from word timings, caption burn-in, "AI-generated" tag |
+| `vstudio_captions.py` | SRT from word timings, caption burn-in (PlayRes matches the frame), "AI-generated" tag |
 | `vstudio_assemble.py` | Clip assembly, crossfades, voice/music mix with ducking, loudness |
 | `vstudio_qa_tech.py` | Technical QA (black/freeze/silence, loudness, duration, size) |
 | `vstudio_beats.py` | Beat detection and beat-aligned shot slots |
 | `vstudio_pack.py` | Character-pack validation, import screening, owner-likeness consent |
-| `vstudio_media.py` | ffprobe helpers |
+| `vstudio_media.py` | Normalize one clip to an aspect (drops cover art), two-pass loudness, ffprobe helpers |
 | `vstudio_film_grade.py` | Film look (light/medium/strong): print the ffmpeg filter, or apply it to a file (audio copied untouched), plus a side-by-side compare still and a 2.39:1 letterbox head-room check. Letterbox defaults off on vertical frames |
 | `vstudio_strobe_cut.py` | Beat-synced strobe cutter: `plan` an EDL from a music info file and an asset manifest (cuts on every tick, holds on bass hits, waves, key-line holds, use cap with free variants, wave balancing, resolved or loop ending), `check` its rules, `render` with the wordmark, grain and AI end label (9:16, 16:9, 1:1; optional size cap for X) |
 | `vstudio_brand_frames.py` | Brand system from a name + one accent hex: auto black/white wordmark with halo, grain + halftone, message-frame layouts (swiss, terminal, type, statement, list, index) and textures, eye-line-safe composites, AI label, contact sheets |
@@ -48,12 +48,34 @@ python3 $B/vstudio_strobe_cut.py render manifest.json edl.json final.mp4 --audio
 ```
 Nothing is brand-specific: the brand name and accent come from the spec and manifest (formats in each script's header docstring). Message copy must come from the owner's own text, and characters must be fictional (or the owner, with consent, on the xAI route only).
 
+## Single clip
+Generated clips (including a 1088x1920 file with a cover image) go through normalize before captions and QA. Sparse sound effects get a quiet bed, then two-pass loudnorm. A clip that is supposed to contain silence omits `--bed` and passes `--allow-silence` to QA (`--allow-silence` also skips the LUFS window; the loudness command still prints the measured LUFS).
+
+```bash
+B=/workspace/vstudio/bin
+python3 $B/vstudio_media.py normalize clip.mp4 norm.mp4 --aspect 9x16
+python3 $B/vstudio_media.py loudness norm.mp4 loud.mp4 --lufs -14 --tp -1.5 --bed
+python3 $B/vstudio_captions.py burn loud.mp4 subs.srt burned.mp4 --aspect 9x16
+python3 $B/vstudio_captions.py tag burned.mp4 tagged.mp4 --aspect 9x16 --text "AI-generated"
+python3 $B/vstudio_qa_tech.py tagged.mp4 --aspect 9x16 --lufs -14 --max-true-peak -1.5
+```
+
+Intentional silence, after the same normalize:
+
+```bash
+python3 $B/vstudio_media.py loudness norm.mp4 loud.mp4 --lufs -14 --tp -1.5
+python3 $B/vstudio_qa_tech.py loud.mp4 --aspect 9x16 --lufs -14 --max-true-peak -1.5 --allow-silence
+```
+
+A no-scripts tag uses drawtext with `expansion=none` (captions in that fallback stay on the `subtitles` filter). Example: `drawtext=expansion=none:text='AI-generated':font=Sans:fontsize=h/40:fontcolor=white@0.85:box=1:boxcolor=black@0.4:x=w-tw-20:y=20`.
+
 ## Install and test
 ```bash
 bash install.sh /workspace/vstudio         # scripts, kits, config, pinned Piper + voice and kit fonts (sha256-checked), Python deps
+python3 tests/smoke.py                     # first install: captions, normalize, loudness, tag, installer. No Whisper download.
 VSTUDIO_HOME=/workspace/vstudio VSTUDIO_PIPER_DIR=/workspace/vstudio/piper python3 -m unittest discover -s tests -v
 ```
-Needs Linux x86_64, Python 3.11+, ffmpeg with libass/freetype, and fontconfig with DejaVu Sans. Kits find fonts in `$VSTUDIO_FONTS`, `/usr/share/fonts`, then `$VSTUDIO_HOME/fonts` (where install.sh puts them). `VSTUDIO_HOME` defaults to `/workspace/vstudio`.
+The full suite also runs Piper and faster-whisper. The whisper size defaults to `small`; set `VSTUDIO_WHISPER_MODEL` to override it. The Piper transcript check is written for `small`. Needs Linux x86_64, Python 3.11+, ffmpeg with libass/freetype, and fontconfig with DejaVu Sans. Kits find fonts in `$VSTUDIO_FONTS`, `/usr/share/fonts`, then `$VSTUDIO_HOME/fonts` (where install.sh puts them). `VSTUDIO_HOME` defaults to `/workspace/vstudio`.
 
 ## Status
 - The xAI video and TTS adapters are tested against the documented request/response shapes (mocked HTTP plus a real local HTTP server). **Live API verification is pending** until an owner runs a first call with their own key. The case-study kit's opt-in xAI TTS route was verified live while making the template v10 sample (11 cues).
